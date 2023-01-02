@@ -1,13 +1,25 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/mager/penny-pincher/logger"
+	"github.com/mager/penny-pincher/router"
+	"go.uber.org/fx"
+	"go.uber.org/zap"
+)
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	fx.New(
+		fx.Provide(
+			logger.Options,
+			router.Options,
+		),
+		fx.Invoke(Register),
+	).Run()
+}
+
+func Register(lc fx.Lifecycle, log *zap.SugaredLogger, r *gin.Engine) {
+	log.Info("Hello, World!")
+
+	r.Run()
 }
