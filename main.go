@@ -1,7 +1,13 @@
 package main
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4"
+	"github.com/mager/penny-pincher/config"
+	"github.com/mager/penny-pincher/ctrl"
+	"github.com/mager/penny-pincher/db"
 	"github.com/mager/penny-pincher/logger"
 	"github.com/mager/penny-pincher/router"
 	"go.uber.org/fx"
@@ -11,6 +17,8 @@ import (
 func main() {
 	fx.New(
 		fx.Provide(
+			config.Options,
+			db.Options,
 			logger.Options,
 			router.Options,
 		),
@@ -18,8 +26,21 @@ func main() {
 	).Run()
 }
 
-func Register(lc fx.Lifecycle, log *zap.SugaredLogger, r *gin.Engine) {
-	log.Info("Hello, World!")
+func Register(
+	lc fx.Lifecycle,
+	cfg config.Config,
+	db *pgx.Conn,
+	log *zap.SugaredLogger,
+	r *gin.Engine,
+) {
+	c := ctrl.Controller{
+		Context:  context.Background(),
+		Config:   cfg,
+		Database: db,
+		Logger:   log,
+		Router:   r,
+	}
 
+	ctrl.New(c)
 	r.Run()
 }

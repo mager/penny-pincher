@@ -12,6 +12,5 @@ func GetBudget(c *gin.Context) {
 	// err := Models.GetAllTodos(&todo)
 
 	// Fetch budget from DB
-
 	c.JSON(http.StatusOK, b)
 }
