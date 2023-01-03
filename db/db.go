@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v5"
 	"github.com/mager/penny-pincher/config"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -34,6 +34,10 @@ func ProvideDB(
 
 var Options = ProvideDB
 
-func GetBudgetByIDQuery(id string) string {
-	return fmt.Sprintf("SELECT * FROM budgets WHERE id = %s", id)
+func GetBudgetQuery(bID string) string {
+	return fmt.Sprintf("SELECT * FROM budgets WHERE id = %s", bID)
+}
+
+func GetBudgetTransactionsQuery(bID string) string {
+	return fmt.Sprintf("SELECT * FROM trxs WHERE budget_id = %s", bID)
 }

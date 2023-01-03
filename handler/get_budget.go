@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v5"
 	"github.com/mager/penny-pincher/db"
 	"github.com/mager/penny-pincher/entity"
 )
@@ -14,7 +14,7 @@ func (h *Handler) getBudget(w http.ResponseWriter, r *http.Request) {
 	var (
 		resp = entity.Budget{}
 		id   = mux.Vars(r)["id"]
-		q    = db.GetBudgetByIDQuery(id)
+		q    = db.GetBudgetQuery(id)
 		err  error
 		rows pgx.Rows
 	)
