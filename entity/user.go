@@ -1,7 +1,8 @@
 package entity
 
-type User struct {
+type GetUserResp struct {
 	ID       int    `json:"id"`
+	Auth0ID  string `json:"auth0_id"`
 	Username string `json:"username"`
-	Phone    string `json:"phone"`
+	Email    string `json:"email"`
 }

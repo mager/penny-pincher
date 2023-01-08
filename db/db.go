@@ -33,11 +33,3 @@ func ProvideDB(
 }
 
 var Options = ProvideDB
-
-func GetBudgetQuery(bID string) string {
-	return fmt.Sprintf("SELECT * FROM budgets WHERE id = %s", bID)
-}
-
-func GetBudgetTransactionsQuery(bID string) string {
-	return fmt.Sprintf("SELECT * FROM trxs WHERE budget_id = %s", bID)
-}

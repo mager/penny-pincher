@@ -33,6 +33,9 @@ func New(h Handler) *Handler {
 
 // RegisterRoutes registers all the routes for the route handler
 func (h *Handler) registerRoutes() {
+	// Get start page
+	h.Router.HandleFunc("/u/{id}", h.getUser).Methods("GET")
+
 	// Get single budget
 	h.Router.HandleFunc("/b/{id}", h.getBudget).Methods("GET")
 	// Get all transactions for budget
