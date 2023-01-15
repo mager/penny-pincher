@@ -2,7 +2,6 @@ package router
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -10,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/kr/pretty"
 	"go.uber.org/zap"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
@@ -46,12 +44,12 @@ func (c CustomClaims) HasScope(expectedScope string) bool {
 	return false
 }
 
-// authZMiddleware authorizes the request
-func authZMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler {
+// authNMiddleware authenticates the request
+func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		issuerURL, err := url.Parse("https://" + domain + "/")
 		if err != nil {
-			log.Fatalf("Failed to parse the issuer url: %v", err)
+			logger.Fatalf("Failed to parse the issuer url: %v", err)
 		}
 		provider := jwks.NewCachingProvider(issuerURL, 5*time.Minute)
 
@@ -68,24 +66,11 @@ func authZMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 			validator.WithAllowedClockSkew(time.Minute),
 		)
 		if err != nil {
-			log.Fatalf("Failed to set up the jwt validator")
-		}
-		pretty.Print("____________________________________________________\n")
-		pretty.Print(issuerURL.String())
-		pretty.Print("____________________________________________________\n")
-		pretty.Print(aud)
-		pretty.Print("____________________________________________________\n")
-		pretty.Print(validator.RS256)
-		pretty.Print("____________________________________________________\n")
-		pretty.Print("____________________________________________________\n")
-		pretty.Print(err)
-
-		if err != nil {
-			log.Fatalf("failed to set up the validator: %v", err)
+			logger.Fatalf("failed to set up the validator: %v", err)
 		}
 
 		errorHandler := func(w http.ResponseWriter, r *http.Request, err error) {
-			log.Printf("Encountered error while validating JWT: %v", err)
+			logger.Fatalf("Encountered error while validating JWT: %v", err)
 
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
@@ -102,8 +87,8 @@ func authZMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 	})
 }
 
-func getAuthZMiddleware(logger *zap.SugaredLogger) mux.MiddlewareFunc {
+func getAuthNMiddleware(logger *zap.SugaredLogger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
-		return authZMiddleware(next, logger)
+		return authNMiddleware(next, logger)
 	}
 }

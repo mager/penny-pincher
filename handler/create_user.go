@@ -4,23 +4,31 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
 	"github.com/mager/penny-pincher/db"
 	"github.com/mager/penny-pincher/entity"
 )
 
-func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	var (
-		resp    = entity.GetUserResp{}
-		u       = entity.User{}
-		auth0ID = mux.Vars(r)["id"]
-		q       = db.GetUserQuery(auth0ID)
-		err     error
-		rows    pgx.Rows
+		req  = entity.CreateUserReq{}
+		resp = entity.CreateUserResp{}
+		u    = entity.User{}
+		err  error
+		rows pgx.Rows
 	)
 
-	h.Logger.Infow("Running query", "handler", "getUser", "query", q)
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		handleServerError(err, w)
+		return
+	}
+	q := db.CreateUserQuery(req)
+
+	h.Logger.Info(q)
+	h.Logger.Info(req)
+
+	h.Logger.Infow("Running query", "handler", "createUser", "query", q)
 	rows, err = h.Database.Query(h.Context, q)
 	if err != nil {
 		handleServerError(err, w)
@@ -37,12 +45,6 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	if u.ID == 0 && resp.Auth0ID == "" {
 		w.WriteHeader(http.StatusNotFound)
 	}
-
-	// Adapt user
-	resp.Auth0ID = u.Auth0ID
-	resp.Email = u.Email
-	resp.Phone = u.Phone
-	resp.Locale = u.Locale
 
 	json.NewEncoder(w).Encode(resp)
 }

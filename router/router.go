@@ -13,7 +13,7 @@ import (
 func ProvideRouter(lc fx.Lifecycle, logger *zap.SugaredLogger) *mux.Router {
 	var router = mux.NewRouter()
 
-	router.Use(jsonMiddleware, getAuthZMiddleware(logger))
+	router.Use(jsonMiddleware, getAuthNMiddleware(logger))
 
 	lc.Append(
 		fx.Hook{
