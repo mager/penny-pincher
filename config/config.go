@@ -6,7 +6,10 @@ import (
 )
 
 type Config struct {
-	BitIOAPIKey string
+	Auth0Domain   string
+	Auth0Audience string
+	Auth0Secret   string
+	BitIOAPIKey   string
 }
 
 func ProvideConfig(log *zap.SugaredLogger) Config {
