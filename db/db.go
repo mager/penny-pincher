@@ -23,7 +23,12 @@ func ProvideDB(
 		connectUrl = fmt.Sprintf("postgres://%s:%s@db.bit.io:5432/%s", userName, cfg.BitIOAPIKey, dbName)
 	)
 
-	conn, err := pgx.Connect(ctx, connectUrl)
+	config, err := pgx.ParseConfig(connectUrl)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to parse connection config: %v\n", err)
+		os.Exit(1)
+	}
+	conn, err := pgx.ConnectConfig(ctx, config)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

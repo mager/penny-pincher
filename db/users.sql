@@ -1,11 +1,11 @@
 create table users (
   id serial primary key,
-  auth0_id varchar not null,
-  email varchar not null,
+  auth0 varchar not null unique,
+  email varchar not null unique,
   phone varchar not null,
-  locale varchar not null,
+  locale varchar not null
 );
 
-insert into users (auth0_id, email, phone, locale) values
+insert into users (auth0, email, phone, locale) values
   ('foo', 'test@gmail.com', '+1234567890', 'en')
 ;

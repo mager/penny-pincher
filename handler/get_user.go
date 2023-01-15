@@ -12,12 +12,12 @@ import (
 
 func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	var (
-		resp    = entity.GetUserResp{}
-		u       = entity.User{}
-		auth0ID = mux.Vars(r)["id"]
-		q       = db.GetUserQuery(auth0ID)
-		err     error
-		rows    pgx.Rows
+		resp  = entity.GetUserResp{}
+		u     = entity.User{}
+		auth0 = mux.Vars(r)["auth0"]
+		q     = db.GetUserQuery(auth0)
+		err   error
+		rows  pgx.Rows
 	)
 
 	h.Logger.Infow("Running query", "handler", "getUser", "query", q)
@@ -28,18 +28,18 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&u.ID, &u.Auth0ID, &u.Email, &u.Phone, &u.Locale)
+		err = rows.Scan(&u.ID, &u.Auth0, &u.Email, &u.Phone, &u.Locale)
 		if err != nil {
 			handleServerError(err, w)
 			return
 		}
 	}
-	if u.ID == 0 && resp.Auth0ID == "" {
+	if u.ID == 0 && resp.Auth0 == "" {
 		w.WriteHeader(http.StatusNotFound)
 	}
 
 	// Adapt user
-	resp.Auth0ID = u.Auth0ID
+	resp.Auth0 = u.Auth0
 	resp.Email = u.Email
 	resp.Phone = u.Phone
 	resp.Locale = u.Locale
