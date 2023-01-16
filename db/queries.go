@@ -6,25 +6,27 @@ import (
 	"github.com/mager/penny-pincher/entity"
 )
 
-func GetBudgetQuery(bID string) string {
-	return fmt.Sprintf("select * from budgets where id = '%s'", bID)
+func GetBudgetsQuery(userID string) string {
+	return fmt.Sprintf(
+		"select id, userid, name, amount, year, month from budgets "+
+			"where userid = '%s' order by createdat desc", userID)
 }
 
-func GetBudgetsQuery(uID string) string {
-	return fmt.Sprintf("select * from budgets where userID = '%s'", uID)
+func GetBudgetQuery(uID string) string {
+	return fmt.Sprintf("select * from budgets where id = '%s'", uID)
 }
 
 func GetBudgetTransactionsQuery(bID string) string {
-	return fmt.Sprintf("select * from trxs where budgetID = '%s'", bID)
+	return fmt.Sprintf("select * from trxs where budgetid = '%s'", bID)
 }
 
 func GetUserQuery(userID string) string {
-	return fmt.Sprintf("select * from users where userID = '%s'", userID)
+	return fmt.Sprintf("select * from users where userid = '%s'", userID)
 }
 
 func CreateUserQuery(u entity.CreateUserReq) string {
 	return fmt.Sprintf(
-		"insert into users (userID, email, phone, locale) values"+
+		"insert into users (userid, email, phone, locale) values"+
 			" ('%s', '%s', '%s', '%s');",
 		u.UserID, u.Email, u.Phone, u.Locale,
 	)

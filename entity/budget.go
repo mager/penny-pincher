@@ -1,10 +1,10 @@
 package entity
 
 type Budget struct {
-	ID     int    `json:"id"`
-	UserID int    `json:"user_id"`
+	ID     int32  `json:"id"`
+	UserID string `json:"userid"`
 	Name   string `json:"name"`
-	Limit  int    `json:"limit"`
-	Year   int    `json:"year"`
-	Month  int    `json:"month"`
+	Limit  int32  `json:"limit"`
+	Year   int32  `json:"year"`
+	Month  int32  `json:"month"`
 }

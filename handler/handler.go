@@ -46,7 +46,6 @@ func (h *Handler) registerRoutes() {
 	h.Router.HandleFunc("/health", h.health).
 		Methods("GET").
 		Name("health")
-
 }
 
 func (h *Handler) health(w http.ResponseWriter, r *http.Request) {

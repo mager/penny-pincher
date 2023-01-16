@@ -12,7 +12,6 @@ import (
 
 type GetBudgetsResp struct {
 	Budgets []entity.Budget `json:"budgets"`
-	Foo     string          `json:"foo"`
 }
 
 func (h *Handler) getBudgets(w http.ResponseWriter, r *http.Request) {
@@ -27,22 +26,17 @@ func (h *Handler) getBudgets(w http.ResponseWriter, r *http.Request) {
 		rows   pgx.Rows
 	)
 
-	resp.Foo = "bar"
 	h.Logger.Infow("Running query", "handler", "getBudgets", "query", q)
 	rows, err = h.Database.Query(h.Context, q)
-	h.Logger.Infow("DEBUG", "rows", rows, "resp", resp, "q", q, "handler", "getBudgets", "userID", userID)
 
 	if err != nil {
 		handleServerError(err, w)
 		return
 	}
 
-	h.Logger.Info("No ERR")
-
 	for rows.Next() {
-		h.Logger.Info("Found something")
 		var b entity.Budget
-		err = rows.Scan(&b.ID, &b.UserID, &b.Name, &b.Limit, &b.Year)
+		err = rows.Scan(&b.ID, &b.UserID, &b.Name, &b.Limit, &b.Year, &b.Month)
 		if err != nil {
 			handleServerError(err, w)
 			return
