@@ -47,9 +47,15 @@ func (c CustomClaims) HasScope(expectedScope string) bool {
 // authNMiddleware authenticates the request
 func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		currentRoute := mux.CurrentRoute(r).GetName()
+		if currentRoute == "health" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		issuerURL, err := url.Parse("https://" + domain + "/")
 		if err != nil {
-			logger.Fatalf("Failed to parse the issuer url: %v", err)
+			logger.Infof("Failed to parse the issuer url: %v", err)
 		}
 		provider := jwks.NewCachingProvider(issuerURL, 5*time.Minute)
 
@@ -66,11 +72,11 @@ func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 			validator.WithAllowedClockSkew(time.Minute),
 		)
 		if err != nil {
-			logger.Fatalf("failed to set up the validator: %v", err)
+			logger.Infof("failed to set up the validator: %v", err)
 		}
 
 		errorHandler := func(w http.ResponseWriter, r *http.Request, err error) {
-			logger.Fatalf("Encountered error while validating JWT: %v", err)
+			logger.Infof("Encountered error while validating JWT: %v", err)
 
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)

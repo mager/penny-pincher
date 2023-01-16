@@ -43,12 +43,15 @@ func (h *Handler) registerRoutes() {
 
 	// Debug
 	h.Router.HandleFunc("/health", h.health).
-		Methods("GET")
+		Methods("GET").
+		Name("health")
+
 }
 
 func (h *Handler) health(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("Health check")
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
 
 func handleServerError(err error, w http.ResponseWriter) {
