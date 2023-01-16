@@ -29,7 +29,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp.Auth0 = req.Auth0
+	resp.UserID = req.UserID
 	resp.Phone = req.Phone
 	resp.Email = req.Email
 	resp.Locale = req.Locale

@@ -10,18 +10,22 @@ func GetBudgetQuery(bID string) string {
 	return fmt.Sprintf("select * from budgets where id = '%s'", bID)
 }
 
-func GetBudgetTransactionsQuery(bID string) string {
-	return fmt.Sprintf("select * from trxs where budget_id = '%s'", bID)
+func GetBudgetsQuery(uID string) string {
+	return fmt.Sprintf("select * from budgets where userID = '%s'", uID)
 }
 
-func GetUserQuery(auth0 string) string {
-	return fmt.Sprintf("select * from users where auth0 = '%s'", auth0)
+func GetBudgetTransactionsQuery(bID string) string {
+	return fmt.Sprintf("select * from trxs where budgetID = '%s'", bID)
+}
+
+func GetUserQuery(userID string) string {
+	return fmt.Sprintf("select * from users where userID = '%s'", userID)
 }
 
 func CreateUserQuery(u entity.CreateUserReq) string {
 	return fmt.Sprintf(
-		"insert into users (auth0, email, phone, locale) values"+
+		"insert into users (userID, email, phone, locale) values"+
 			" ('%s', '%s', '%s', '%s');",
-		u.Auth0, u.Email, u.Phone, u.Locale,
+		u.UserID, u.Email, u.Phone, u.Locale,
 	)
 }

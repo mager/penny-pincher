@@ -6,4 +6,5 @@ type Budget struct {
 	Name   string `json:"name"`
 	Limit  int    `json:"limit"`
 	Year   int    `json:"year"`
+	Month  int    `json:"month"`
 }
