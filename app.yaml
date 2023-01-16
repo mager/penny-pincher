@@ -1,1 +1,4 @@
 runtime: go119
+env_variables:
+  PENNYPINCHER_AUTH0DOMAIN: stackpaper-prod.us.auth0.com
+  PENNYPINCHER_AUTH0AUDIENCE: https://penny-pincher
