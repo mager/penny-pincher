@@ -40,6 +40,15 @@ func (h *Handler) registerRoutes() {
 	// Budgets
 	h.Router.HandleFunc("/b/{id}", h.getBudget).Methods("GET")
 	h.Router.HandleFunc("/b/{id}/t", h.getBudgetTrxs).Methods("GET")
+
+	// Debug
+	h.Router.HandleFunc("/health", h.health).
+		Methods("GET")
+}
+
+func (h *Handler) health(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("Health check")
+	w.WriteHeader(http.StatusOK)
 }
 
 func handleServerError(err error, w http.ResponseWriter) {
