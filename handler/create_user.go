@@ -29,6 +29,8 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.Logger.Infow("User created", "handler", "createUser", "userid", req.UserID, "email", req.Email, "phone", req.Phone, "locale", req.Locale)
+
 	resp.UserID = req.UserID
 	resp.Phone = req.Phone
 	resp.Email = req.Email
