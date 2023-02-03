@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gofrs/uuid"
 	"github.com/mager/penny-pincher/db"
 	"github.com/mager/penny-pincher/entity"
 )
@@ -20,7 +21,10 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		handleServerError(err, w)
 		return
 	}
-	q := db.CreateUserQuery(req)
+
+	// Create a UUID for the user
+	userID, _ := uuid.NewV4()
+	q := db.CreateUserQuery(req, userID.String())
 
 	h.Logger.Infow("Running query", "handler", "createUser", "query", q)
 	_, err = h.Database.Query(h.Context, q)
@@ -29,9 +33,9 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.Logger.Infow("User created", "handler", "createUser", "userid", req.UserID, "email", req.Email, "phone", req.Phone, "locale", req.Locale)
+	h.Logger.Infow("User created", "handler", "createUser", "userid", userID, "email", req.Email, "phone", req.Phone, "locale", req.Locale)
 
-	resp.UserID = req.UserID
+	resp.UserID = userID.String()
 	resp.Phone = req.Phone
 	resp.Email = req.Email
 	resp.Locale = req.Locale

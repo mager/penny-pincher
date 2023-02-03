@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
 	"github.com/mager/penny-pincher/db"
 	"github.com/mager/penny-pincher/entity"
@@ -12,14 +11,20 @@ import (
 
 func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	var (
-		resp   = entity.GetUserResp{}
-		u      = entity.User{}
-		userID = mux.Vars(r)["userID"]
-		q      = db.GetUserQuery(userID)
-		err    error
-		rows   pgx.Rows
+		req  = entity.GetUserReq{}
+		resp = entity.GetUserResp{}
+		u    = entity.User{}
+		err  error
+		rows pgx.Rows
 	)
 
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		handleServerError(err, w)
+		return
+	}
+
+	q := db.GetUserQuery(req.Email)
 	h.Logger.Infow("Running query", "handler", "getUser", "query", q)
 	rows, err = h.Database.Query(h.Context, q)
 	if err != nil {
@@ -34,8 +39,10 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	if u.ID == 0 && resp.UserID == "" {
+
+	if u.ID == int(0) {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 
 	// Adapt user

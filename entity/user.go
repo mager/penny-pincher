@@ -12,6 +12,10 @@ type User struct {
 	UserFields
 }
 
+type GetUserReq struct {
+	Email string `json:"email"`
+}
+
 type GetUserResp struct {
 	UserFields
 }

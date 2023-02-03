@@ -20,14 +20,14 @@ func GetBudgetTransactionsQuery(bID string) string {
 	return fmt.Sprintf("select * from trxs where budgetid = '%s'", bID)
 }
 
-func GetUserQuery(userID string) string {
-	return fmt.Sprintf("select * from users where userid = '%s'", userID)
+func GetUserQuery(email string) string {
+	return fmt.Sprintf("select * from users where email = '%s'", email)
 }
 
-func CreateUserQuery(u entity.CreateUserReq) string {
+func CreateUserQuery(u entity.CreateUserReq, userID string) string {
 	return fmt.Sprintf(
 		"insert into users (userid, email, phone, locale) values"+
 			" ('%s', '%s', '%s', '%s');",
-		u.UserID, u.Email, u.Phone, u.Locale,
+		userID, u.Email, u.Phone, u.Locale,
 	)
 }
