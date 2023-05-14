@@ -16,29 +16,37 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		err  error
 	)
 
+	// Create a UUID for the user
+	userID, _ := uuid.NewV4()
+	// Get email from request context
+	email := r.Context().Value("email").(string)
+
+	// Decode request
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		handleServerError(err, w)
 		return
 	}
 
-	// Create a UUID for the user
-	userID, _ := uuid.NewV4()
-	q := db.CreateUserQuery(req, userID.String())
+	q := db.CreateUserQuery(userID.String(), email, req.Phone, req.Country)
+	h.Logger.Info(userID)
+	h.Logger.Info(q)
 
 	h.Logger.Infow("Running query", "handler", "createUser", "query", q)
-	_, err = h.Database.Query(h.Context, q)
+	rows, err := h.Database.Query(h.Context, q)
+	h.Logger.Info(rows)
+	h.Logger.Info(err)
 	if err != nil {
 		handleServerError(err, w)
 		return
 	}
 
-	h.Logger.Infow("User created", "handler", "createUser", "userid", userID, "email", req.Email, "phone", req.Phone, "locale", req.Locale)
+	h.Logger.Infow("User created", "handler", "createUser", "userid", userID, "email", email)
 
 	resp.UserID = userID.String()
+	resp.Email = email
 	resp.Phone = req.Phone
-	resp.Email = req.Email
-	resp.Locale = req.Locale
+	resp.Country = req.Country
 
 	json.NewEncoder(w).Encode(resp)
 }

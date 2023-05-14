@@ -2,8 +2,6 @@ package db
 
 import (
 	"fmt"
-
-	"github.com/mager/penny-pincher/entity"
 )
 
 func GetBudgetsQuery(userID string) string {
@@ -24,10 +22,10 @@ func GetUserQuery(email string) string {
 	return fmt.Sprintf("select * from users where email = '%s'", email)
 }
 
-func CreateUserQuery(u entity.CreateUserReq, userID string) string {
+func CreateUserQuery(userID, email, phone, country string) string {
 	return fmt.Sprintf(
-		"insert into users (userid, email, phone, locale) values"+
+		"insert into users (userid, email, phone, country) values"+
 			" ('%s', '%s', '%s', '%s');",
-		userID, u.Email, u.Phone, u.Locale,
+		userID, email, phone, country,
 	)
 }

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -41,6 +42,14 @@ func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
+
+		// Extract the email from the token
+		email := token.Claims.(jwt.MapClaims)["email"].(string)
+
+		// Set the email on the request context
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, "email", email)
+		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})

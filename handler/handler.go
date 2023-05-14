@@ -34,8 +34,8 @@ func New(h Handler) *Handler {
 // RegisterRoutes registers all the routes for the route handler
 func (h *Handler) registerRoutes() {
 	// User
-	h.Router.HandleFunc("/me", h.getUser).Methods("POST")
-	h.Router.HandleFunc("/u/create", h.createUser).Methods("POST")
+	h.Router.HandleFunc("/me", h.getUser).Methods("GET")
+	h.Router.HandleFunc("/signup", h.createUser).Methods("POST")
 
 	// Budgets
 	h.Router.HandleFunc("/u/{userID}/b", h.getBudgets).Methods("GET")
