@@ -10,6 +10,7 @@ type Config struct {
 	Auth0Audience string
 	Auth0Secret   string
 	BitIOAPIKey   string
+	NextSecret    string
 }
 
 func ProvideConfig(log *zap.SugaredLogger) Config {
