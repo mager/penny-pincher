@@ -34,6 +34,8 @@ func (h *Handler) getBudgets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		var b entity.Budget
 		err = rows.Scan(&b.ID, &b.UserID, &b.Name, &b.Limit, &b.Year, &b.Month)

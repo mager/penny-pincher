@@ -34,12 +34,13 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 
 	h.Logger.Infow("Running query", "handler", "createUser", "query", q)
 	rows, err := h.Database.Query(h.Context, q)
-	h.Logger.Info(rows)
-	h.Logger.Info(err)
+
 	if err != nil {
 		handleServerError(err, w)
 		return
 	}
+
+	defer rows.Close()
 
 	h.Logger.Infow("User created", "handler", "createUser", "userid", userID, "email", email)
 

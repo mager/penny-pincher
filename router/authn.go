@@ -22,6 +22,7 @@ func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 		secret := nextSecret
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
+			logger.Info("Error: No token")
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}

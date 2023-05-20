@@ -28,6 +28,8 @@ func (h *Handler) getBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		err = rows.Scan(&resp.ID, &resp.UserID, &resp.Name, &resp.Limit, &resp.Year)
 		if err != nil {

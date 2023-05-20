@@ -20,10 +20,13 @@ func (h *Handler) getBudgetTrxs(w http.ResponseWriter, r *http.Request) {
 
 	h.Logger.Infow("Running query", "handler", "getBudgetTrxs", "query", q)
 	rows, err = h.Database.Query(h.Context, q)
+
 	if err != nil {
 		handleServerError(err, w)
 		return
 	}
+
+	defer rows.Close()
 
 	// Collect rows
 	resp, err := pgx.CollectRows(
