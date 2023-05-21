@@ -2,6 +2,7 @@ package entity
 
 type UserFields struct {
 	UserID  string `json:"userid"`
+	Name    string `json:"name"`
 	Email   string `json:"email"`
 	Phone   string `json:"phone"`
 	Country string `json:"country"`
@@ -21,6 +22,7 @@ type GetUserResp struct {
 }
 
 type CreateUserReq struct {
+	Name    string `json:"name"`
 	Phone   string `json:"phone"`
 	Country string `json:"country"`
 }

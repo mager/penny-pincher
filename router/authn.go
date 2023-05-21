@@ -16,6 +16,8 @@ var (
 	nextSecret = os.Getenv("PENNYPINCHER_NEXTSECRET")
 )
 
+type Email string
+
 // authNMiddleware authenticates the request
 func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -32,20 +34,19 @@ func authNMiddleware(next http.Handler, logger *zap.SugaredLogger) http.Handler 
 			return []byte(secret), nil
 		})
 		if err != nil {
-			logger.Info("Error: ", err)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			logger.Info("Claims: ", claims)
+			logger.Info("Successful authentication", claims["email"])
 		} else {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
 		// Extract the email from the token
-		email := token.Claims.(jwt.MapClaims)["email"].(string)
+		email := token.Claims.(jwt.MapClaims)["email"].(Email)
 
 		// Set the email on the request context
 		ctx := r.Context()

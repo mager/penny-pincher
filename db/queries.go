@@ -19,13 +19,13 @@ func GetBudgetTransactionsQuery(bID string) string {
 }
 
 func GetUserQuery(email string) string {
-	return fmt.Sprintf("select * from users where email = '%s'", email)
+	return fmt.Sprintf("select id, userid, name, email, phone, country from users where email = '%s'", email)
 }
 
-func CreateUserQuery(userID, email, phone, country string) string {
+func CreateUserQuery(userID, name, email, phone, country string) string {
 	return fmt.Sprintf(
-		"insert into users (userid, email, phone, country) values"+
-			" ('%s', '%s', '%s', '%s');",
-		userID, email, phone, country,
+		"insert into users (userid, name, email, phone, country) values"+
+			" ('%s', '%s', '%s', '%s', '%s');",
+		userID, name, email, phone, country,
 	)
 }

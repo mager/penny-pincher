@@ -49,7 +49,6 @@ func (h *Handler) registerRoutes() {
 }
 
 func (h *Handler) health(w http.ResponseWriter, r *http.Request) {
-	h.Logger.Info("Health check")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("OK"))
 }

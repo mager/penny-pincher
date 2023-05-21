@@ -28,9 +28,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	q := db.CreateUserQuery(userID.String(), email, req.Phone, req.Country)
-	h.Logger.Info(userID)
-	h.Logger.Info(q)
+	q := db.CreateUserQuery(userID.String(), req.Name, email, req.Phone, req.Country)
 
 	h.Logger.Infow("Running query", "handler", "createUser", "query", q)
 	rows, err := h.Database.Query(h.Context, q)
@@ -45,6 +43,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Infow("User created", "handler", "createUser", "userid", userID, "email", email)
 
 	resp.UserID = userID.String()
+	resp.Name = req.Name
 	resp.Email = email
 	resp.Phone = req.Phone
 	resp.Country = req.Country

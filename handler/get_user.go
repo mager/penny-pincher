@@ -31,7 +31,7 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err = rows.Scan(&u.ID, &u.UserID, &u.Email, &u.Phone, &u.Country)
+		err = rows.Scan(&u.ID, &u.UserID, &u.Name, &u.Email, &u.Phone, &u.Country)
 		if err != nil {
 			handleServerError(err, w)
 			return
@@ -45,6 +45,7 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 
 	// Adapt user
 	resp.UserID = u.UserID
+	resp.Name = u.Name
 	resp.Email = u.Email
 	resp.Phone = u.Phone
 	resp.Country = u.Country
